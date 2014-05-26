@@ -6,6 +6,8 @@ import aaberg.callbacks.Callback;
 import aaberg.components.TheMenu;
 import aaberg.data.ColumnInfo;
 import aaberg.data.DataFile;
+import aaberg.tools.FilterMethod;
+import aaberg.tools.FilterMethodFactory;
 import com.alee.laf.WebLookAndFeel;
 
 import javax.swing.*;
@@ -35,6 +37,10 @@ public class TestForm {
     private JButton cutBeforeApplyButton;
     private JTextField cutAfterTextField;
     private JButton cutAfterApplyButton;
+    private JTextField filterOrderTextField;
+    private JComboBox filterTypeSelect;
+    private JButton filterApplyButton;
+    private JComboBox filterColumnSelect;
 
     //    private JFileChooser theFileChooser;
     private static JFileChooser fileChooser;
@@ -63,6 +69,7 @@ public class TestForm {
         frame.setVisible(true);
     }
 
+    @SuppressWarnings("unchecked")
     public void initStuff() {
 
         fileChooser.setFileFilter(new FileNameExtensionFilter(".txt files", "txt"));
@@ -117,7 +124,23 @@ public class TestForm {
             }
         });
 
+        this.filterOrderTextField.setText("20");
 
+        this.filterTypeSelect.addItem(FilterMethod.getMinFilterFactory());
+        this.filterTypeSelect.addItem(FilterMethod.getMaxFilterFactory());
+        this.filterTypeSelect.addItem(FilterMethod.getMedialFilterFactory());
+        this.filterTypeSelect.addItem(FilterMethod.getMeanFilterFacory());
+
+        this.filterApplyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                FilterMethodFactory filterMethodFactory = (FilterMethodFactory)filterTypeSelect.getSelectedItem();
+                int filterOrder = Integer.parseInt(filterOrderTextField.getText());
+                ColumnInfo columnInfo = (ColumnInfo)filterColumnSelect.getSelectedItem();
+
+                new ApplyFilterAction().perform(filterOrder, filterMethodFactory, columnInfo);
+            }
+        });
     }
 
     private void fileOpened(){
@@ -148,6 +171,7 @@ public class TestForm {
         this.comboBoxOffset.removeAllItems();
         for (ColumnInfo ci : ApplicationState.instance.getDataFile().getColumnsInfos()) {
             this.comboBoxOffset.addItem(ci);
+            this.filterColumnSelect.addItem(ci);
         }
     }
 
