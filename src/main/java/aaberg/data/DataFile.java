@@ -1,12 +1,9 @@
 package aaberg.data;
 
 import java.io.*;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by lars on 25.05.14.
@@ -56,7 +53,7 @@ public class DataFile {
 
     private void load() {
 
-        DecimalFormat decFormat = new DecimalFormat("0.###", new DecimalFormatSymbols(new Locale("no")));
+//        DecimalFormat decFormat = new DecimalFormat("0.###", new DecimalFormatSymbols(new Locale("no")));
 
         this.setColumnsInfos(null);
 
@@ -83,7 +80,16 @@ public class DataFile {
                     initColInfoIfNull(arr.length);
 
                     for (int idx = 0; idx < vals.length; idx++) {
-                        arr[idx] = decFormat.parse(vals[idx].trim()).doubleValue();
+
+                        ColumnInfo colInfo = columnsInfos.get(idx);
+
+                        String strVal = vals[idx].trim().replace(".", ",");
+                        int decimals = strVal.length() - strVal.indexOf(",");
+                        if (decimals < strVal.length() && decimals > colInfo.getNumberOfDecimals()) {
+                            colInfo.setNumberOfDecimals(decimals);
+                        }
+
+                        arr[idx] = colInfo.getDecimalFormat().parse(strVal).doubleValue();
                     }
                     this.data.add(arr);
                 }
@@ -121,9 +127,13 @@ public class DataFile {
     public void updateColumnInfos() {
         if (this.getData() == null || this.getData().size() == 0) return;
         int colCnt = this.getData().get(0).length;
-        this.setColumnsInfos(null);
 
         initColInfoIfNull(colCnt);
+
+        for (ColumnInfo ci : getColumnsInfos()){
+            ci.setMaxValue(Double.MIN_VALUE);
+            ci.setMinValue(Double.MAX_VALUE);
+        }
 
         for (int rowIdx = 0; rowIdx < this.getData().size(); rowIdx++) {
             double[] row = this.getData().get(rowIdx);

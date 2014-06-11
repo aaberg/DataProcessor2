@@ -169,6 +169,7 @@ public class TestForm {
 
     private void prepareConversions() {
         this.comboBoxOffset.removeAllItems();
+        this.filterColumnSelect.removeAllItems();
         for (ColumnInfo ci : ApplicationState.instance.getDataFile().getColumnsInfos()) {
             this.comboBoxOffset.addItem(ci);
             this.filterColumnSelect.addItem(ci);

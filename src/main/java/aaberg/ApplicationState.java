@@ -15,7 +15,6 @@ import java.util.Locale;
 public class ApplicationState {
 
     public final static ApplicationState instance;
-
     public static final DecimalFormat decFormat = new DecimalFormat("#,##0.000", new DecimalFormatSymbols(new Locale("no")));
 
 //    private List<Callback> dataFileSetCallbacks = new ArrayList<>();
@@ -27,7 +26,6 @@ public class ApplicationState {
 
 
     private DataFile dataFile;
-
     public DataFile getDataFile() {
         return dataFile;
     }
@@ -54,6 +52,4 @@ public class ApplicationState {
         }
 
     }
-
-
 }

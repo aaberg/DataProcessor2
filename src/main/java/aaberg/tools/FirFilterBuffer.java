@@ -1,6 +1,7 @@
 package aaberg.tools;
 
 import java.util.AbstractList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -91,7 +92,11 @@ public class FirFilterBuffer {
 
     public double medianVal() {
         if (length == 0) return 0;
+
+        final double[] sortedBuffer = Arrays.copyOfRange(buf, 0, length);
+        Arrays.sort(sortedBuffer);
+
         int idx = new Double( Math.floor(length / 2d)).intValue();
-        return valList.get(idx);
+        return sortedBuffer[idx];
     }
 }

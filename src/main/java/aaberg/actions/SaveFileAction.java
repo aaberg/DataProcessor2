@@ -2,6 +2,7 @@ package aaberg.actions;
 
 import aaberg.ApplicationState;
 import aaberg.TestForm;
+import aaberg.data.ColumnInfo;
 
 import javax.swing.*;
 import java.io.File;
@@ -27,10 +28,11 @@ public class SaveFileAction implements Action {
             java.util.List<double[]> d = ApplicationState.instance.getDataFile().getData();
             for (double[] row : d) {
                 for (int colIdx = 0; colIdx < row.length; colIdx++) {
+                    ColumnInfo columnInfo = ApplicationState.instance.getDataFile().getColumnsInfos().get(colIdx);
                     if (colIdx != 0) {
                         writer.write('\t');
                     }
-                    writer.write(ApplicationState.decFormat.format(row[colIdx]));
+                    writer.write(columnInfo.getDecimalFormat().format(row[colIdx]));
                 }
                 writer.write("\r\n");
             }

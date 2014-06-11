@@ -1,5 +1,7 @@
 package aaberg.data;
 
+import aaberg.ApplicationState;
+
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -37,7 +39,7 @@ public class DataFileTableModel implements TableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return Double.class;
+        return String.class;
     }
 
     @Override
@@ -50,7 +52,9 @@ public class DataFileTableModel implements TableModel {
         if (columnIndex == 0) {
             return rowIndex + 1;
         }
-        return dataFile.getData().get(rowIndex)[columnIndex -1];
+        ColumnInfo columnInfo = ApplicationState.instance.getDataFile().getColumnsInfos().get(columnIndex - 1);
+        double doubleVal = dataFile.getData().get(rowIndex)[columnIndex -1];
+        return columnInfo.getDecimalFormat().format( doubleVal );
     }
 
     @Override
